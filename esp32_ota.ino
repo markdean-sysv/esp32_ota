@@ -13,10 +13,14 @@ const char * password = "andrew01";
 
 
 String FirmwareVer = {
-  "2.1"
+  "2.2"
 };
-#define URL_fw_Version "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_ota/bin_version.txt"
-#define URL_fw_Bin "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_ota/fw.bin"
+#define URL_fw_Version "https://raw.githubusercontent.com/markdean-sysv/esp32_ota/bin_version.txt"
+#define URL_fw_Bin "https://raw.githubusercontent.com/markdean-sysv/esp32_ota/fw.bin"
+
+//#define URL_fw_Version "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_ota/bin_version.txt"
+//#define URL_fw_Bin "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_ota/fw.bin"
+
 
 //#define URL_fw_Version "http://cade-make.000webhostapp.com/version.txt"
 //#define URL_fw_Bin "http://cade-make.000webhostapp.com/firmware.bin"
@@ -196,7 +200,9 @@ void setup() {
   if (! ledmatrix.begin()) {
     while (1);
   }
-  
+
+  ledmatrix.setRotation(1);
+    
   pinMode(button_boot.PIN, INPUT);
   attachInterrupt(button_boot.PIN, isr, RISING);
   Serial.begin(115200);
@@ -205,7 +211,7 @@ void setup() {
 //  pinMode(LED_BUILTIN, OUTPUT);
   connect_wifi();
 
-  aliasBitmap(11, 7, brightness, smile);
+  aliasBitmap(11, 7, brightness, logo);
   
 }
 void loop() {
