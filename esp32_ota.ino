@@ -1,3 +1,7 @@
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_IS31FL3731.h>
+
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <HTTPUpdate.h>
@@ -75,6 +79,118 @@ void IRAM_ATTR isr() {
 }
 
 
+// ------------------------------------------------------------------------------------------
+
+// If you're using the full breakout...
+Adafruit_IS31FL3731 ledmatrix = Adafruit_IS31FL3731();
+// If you're using the FeatherWing version
+//Adafruit_IS31FL3731_Wing ledmatrix = Adafruit_IS31FL3731_Wing();
+
+
+// The lookup table to make the brightness changes be more visible
+uint8_t sweep[] = {1, 2, 3, 4, 6, 8, 10, 15, 20, 30, 40, 60, 60, 40, 30, 20, 15, 10, 8, 6, 4, 3, 2, 1};
+
+int smile[7][11] ={{0,0,0,0,0,0,0,0,0,0,0},
+                   {0,0,1,1,0,0,0,1,1,0,0},
+                   {0,0,1,1,0,0,0,1,1,0,0},
+                   {0,0,0,0,0,0,0,0,0,0,0},
+                   {0,0,1,0,0,0,0,0,1,0,0},
+                   {0,0,0,1,1,1,1,1,0,0,0},
+                   {0,0,0,0,0,0,0,0,0,0,0}
+                  };
+
+int sad[7][11] =  {{0,0,0,0,0,0,0,0,0,0,0},
+                   {0,0,1,1,0,0,0,1,1,0,0},
+                   {0,0,1,1,0,0,0,1,1,0,0},
+                   {0,0,0,0,0,0,0,0,0,0,0},
+                   {0,0,0,1,1,1,1,1,0,0,0},
+                   {0,0,1,0,0,0,0,0,1,0,0},
+                   {0,0,0,0,0,0,0,0,0,0,0}
+                  };
+
+int logo[7][11] = {{0,0,0,0,0,0,0,0,0,0,0},
+                   {0,0,0,1,1,0,0,1,1,2,0},
+                   {0,0,0,1,1,0,2,1,1,0,0},
+                   {0,0,0,0,0,0,1,1,2,0,0},
+                   {0,0,0,0,0,2,1,1,0,0,0},
+                   {0,0,0,0,0,1,1,2,0,0,0},
+                   {0,0,0,0,2,1,1,0,0,0,0}
+                  };
+
+unsigned long timerPeriod = 50; 
+unsigned long startMillis; 
+unsigned long currentMillis;
+int brightness = 0;
+bool pulse = false;
+
+void aliasBitmap(int width, int height, int brightness, int data[7][11])
+{
+    int x;
+    int y;
+    int b;
+    int x1;
+    int y1;
+
+    for (x = 0; x < width; x++)
+    {
+        for (y = 0; y < height; y++)
+        {
+         //   b = brightness * data[y][x];              
+            if (data[y][x] == 1)
+                b = 200;
+            else if (data[y][x] == 2)
+                b = 64;
+            else
+                b = 0;
+                
+            if (x > 5)
+            {
+                x1 = x - 6;
+                y1 = y + 1;
+            }
+            else
+            {
+                x1 = x;
+                y1 = y + 9;
+            }
+            ledmatrix.drawPixel(x1, y1, b);
+        }
+    }
+}
+
+
+void flashBitmap(int width, int height, int brightness, int data[7][11])
+{
+    int x;
+    int y;
+    int b;
+    int x1;
+    int y1;
+
+    for (x = 0; x < width; x++)
+    {
+        for (y = 0; y < height; y++)
+        {
+            b = brightness * data[y][x];              
+                
+            if (x > 5)
+            {
+                x1 = x - 6;
+                y1 = y + 1;
+            }
+            else
+            {
+                x1 = x;
+                y1 = y + 9;
+            }
+            ledmatrix.drawPixel(x1, y1, b);
+        }
+    }
+}
+
+// ------------------------------------------------------------------------------------------
+
+
 void setup() {
   pinMode(button_boot.PIN, INPUT);
   attachInterrupt(button_boot.PIN, isr, RISING);
@@ -83,6 +199,9 @@ void setup() {
   Serial.println(FirmwareVer);
 //  pinMode(LED_BUILTIN, OUTPUT);
   connect_wifi();
+
+  aliasBitmap(11, 7, brightness, logo);
+  
 }
 void loop() {
   if (button_boot.pressed) { //to connect wifi via Android esp touch app 
