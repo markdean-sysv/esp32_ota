@@ -192,6 +192,11 @@ void flashBitmap(int width, int height, int brightness, int data[7][11])
 
 
 void setup() {
+
+  if (! ledmatrix.begin()) {
+    while (1);
+  }
+  
   pinMode(button_boot.PIN, INPUT);
   attachInterrupt(button_boot.PIN, isr, RISING);
   Serial.begin(115200);
@@ -200,7 +205,7 @@ void setup() {
 //  pinMode(LED_BUILTIN, OUTPUT);
   connect_wifi();
 
-  aliasBitmap(11, 7, brightness, logo);
+  aliasBitmap(11, 7, brightness, smile);
   
 }
 void loop() {
