@@ -15,8 +15,8 @@ const char * password = "andrew01";
 String FirmwareVer = {
   "2.2"
 };
-#define URL_fw_Version "https://raw.githubusercontent.com/markdean-sysv/esp32_ota/bin_version.txt"
-#define URL_fw_Bin "https://raw.githubusercontent.com/markdean-sysv/esp32_ota/fw.bin"
+#define URL_fw_Version "https://raw.githubusercontent.com/markdean-sysv/esp32_ota/main/bin_version.txt"
+#define URL_fw_Bin "https://raw.githubusercontent.com/markdean-sysv/esp32_ota/main/fw.bin"
 
 //#define URL_fw_Version "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_ota/bin_version.txt"
 //#define URL_fw_Bin "https://raw.githubusercontent.com/programmer131/ESP8266_ESP32_SelfUpdate/master/esp32_ota/fw.bin"
@@ -211,7 +211,9 @@ void setup() {
 //  pinMode(LED_BUILTIN, OUTPUT);
   connect_wifi();
 
+//  flashBitmap(11, 7, 128, sad);
   aliasBitmap(11, 7, brightness, logo);
+
   
 }
 void loop() {
